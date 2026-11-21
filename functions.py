@@ -80,14 +80,14 @@ def extractTranscriptText(transcript: list) -> str:
 
 def getVideoTranscripts():
     """
-        Function to extract transcripts for all video IDs stored in "app/data/video-ids.parquet"
+        Function to extract transcripts for all video IDs stored in "data/video-ids.parquet"
 
         Dependencies:
             - extractTranscriptText()
     """
 
 
-    df = pl.read_parquet('app/data/video-ids.parquet')
+    df = pl.read_parquet('data/video-ids.parquet')
 
     transcript_text_list = []
 
@@ -150,7 +150,7 @@ def transformData():
             - setDatatypes()
     """
 
-    df = pl.read_parquet('app/data/video-transcripts.parquet')
+    df = pl.read_parquet('data/video-transcripts.parquet')
 
     df = handleSpecialStrings(df)
     df = setDatatypes(df)
@@ -163,7 +163,7 @@ def createTextEmbeddings():
     """
 
     # read data from file
-    df = pl.read_parquet('app/data/video-transcripts.parquet')
+    df = pl.read_parquet('data/video-transcripts.parquet')
 
     # define embedding model and columns to embed
     # model_path = 'app/data/all-MiniLM-L6-v2'
