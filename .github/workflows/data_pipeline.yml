@@ -1,0 +1,47 @@
+name: data-pipeline-workflow
+
+on:
+  push:
+  workflow_dispatch:
+  schedule:
+    - cron: "35 0 * * *" # Runs every day at 00:35 UTC
+
+jobs:
+  run-data-pipeline:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repo content
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.14
+          cache: "pip"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run data pipeline
+        env:
+          YT_API_KEY: ${{ secrets.YT_API_KEY }}
+        run: |
+          python data_pipeline.py
+
+      - name: check for changes in the repo
+        id: check_changes
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@users.noreply.github.com"
+          git add .
+          git diff --staged --quiet || echo "Changes=true" >> $GITHUB_ENV
+
+      - name: Commit and push if changes
+        if: env.Changes == 'true'
+        run: |
+          git comit -m "updated video index"
+          git push
