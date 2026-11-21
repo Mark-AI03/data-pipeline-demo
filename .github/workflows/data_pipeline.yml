@@ -43,5 +43,5 @@ jobs:
       - name: Commit and push if changes
         if: env.Changes == 'true'
         run: |
-          git comit -m "updated video index"
+          git commit -m "updated video index"
           git push
